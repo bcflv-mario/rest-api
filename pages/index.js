@@ -1,8 +1,135 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+// import prisma from 'lib/prisma'
 
 export default function Home() {
+  
+  const endpoints = [
+    {
+      name: 'GET /trips',
+      description: 'List all the trips',
+    },
+    {
+      name: 'POST /trips',
+      description: 'Create a new trip',
+      parameters: [
+				{ name: 'user', description: '*required* the id of the user' },
+        { name: 'name', description: '*required* the name of the trip' },
+        {
+          name: 'start_date',
+          description: '(optional) the starting date of the trip',
+        },
+        {
+          name: 'end_date',
+          description: '(optional) the end date of the trip',
+        },
+      ],
+    },
+    {
+      name: 'GET /trips/:id',
+      description: 'Get the details of a trip, including expenses',
+      parameters: [
+        {
+          name: 'id',
+          description: '*required* the number that identifies the trip',
+        },
+      ],
+      response: `{"id":2,"user":2,"name":"Second Trip","start_date":"2022-05-19T18:00:59.514Z","end_date":null}
+      `,
+    },
+    {
+      name: 'PUT /trips/:id',
+      description: 'Edit a trip',
+      parameters: [
+        {
+          name: 'id',
+          description: '*required* the number that identifies the trip',
+        },
+        { name: 'name', description: '(optional) the name of the trip' },
+        {
+          name: 'start_date',
+          description: '(optional) the starting date of the trip',
+        },
+        {
+          name: 'end_date',
+          description: '(optional) the end date of the trip',
+        },
+      ],
+    },
+    {
+      name: 'DELETE /trips/:id',
+      description: 'Delete a trip',
+      parameters: [
+        {
+          name: 'id',
+          description: '*required* the number that identifies the trip',
+        },
+      ],
+    },
+    {
+      name: 'POST /expenses',
+      description: 'Create a new expense',
+      parameters: [
+        {
+          name: 'trip',
+          description: '*required* the number that identifies the trip',
+        },
+        { name: 'name', description: '*required* the name of the expense' },
+        { name: 'date', description: '*required* the date of the expense' },
+        { name: 'amount', description: '*required* the amount of the expense' },
+        {
+          name: 'currency',
+          description: '*required* the currency of the expense',
+        },
+      ],
+    },
+    {
+      name: 'GET /expenses/:id',
+      description: 'Get the details of an expense',
+      parameters: [
+        {
+          name: 'id',
+          description: '*required* the number that identifies the expense',
+        },
+      ],
+      response: `{"id":2,"trip":4,"name":"Jet A-1","date":"2022-05-20T20:10:53.083Z","amount":4500,"currency":"lbs"}
+      `
+    },
+    {
+      name: 'PUT /expenses/:id',
+      description: 'Edit an expense',
+      parameters: [
+        {
+          name: 'id',
+          description: '*required* the number that identifies the expense',
+        },
+        {
+          name: 'trip',
+          description: '(optional) the number that identifies the trip',
+        },
+        { name: 'name', description: '(optional) the name of the expense' },
+        { name: 'date', description: '(optional) the date of the expense' },
+        { name: 'amount', description: '(optional) the amount of the expense' },
+        {
+          name: 'currency',
+          description: '(optional) the currency of the expense',
+        },
+      ],
+    },
+    {
+      name: 'DELETE /expense',
+      description: 'Delete an expense',
+      parameters: [
+        {
+          name: 'id',
+          description: '*required* the number that identifies the expense',
+        },
+      ],
+    },
+  ]
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,57 +140,49 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+        Trips API 
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+        The documentation
         </p>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          {endpoints.map((endpoint, index) => (
+            <div className={styles.card} key={index}>
+            <h2>
+              <code>{endpoint.name}</code>
+            </h2>
+            <p>{endpoint.description}</p>
+            {endpoint.parameters && (
+              <>
+                <br />
+                <p>Parameters:</p>
+                <ul>
+                  {endpoint.parameters.map((parameter, parameterIndex) => (
+                    <li key={parameterIndex}>
+                      <b>{parameter.name}</b>: {parameter.description}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {endpoint.response && (
+              <>
+                <br />
+                <p>Example response:</p>
+                <pre>
+                  <code>{endpoint.response}</code>
+                </pre>
+              </>
+            )}
+          </div>
+          ))}
+          
         </div>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      
     </div>
   )
 }
